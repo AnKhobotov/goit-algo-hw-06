@@ -2,6 +2,7 @@ from collections import UserDict
 
 
 class Field:
+
     def __init__(self, value):
         self.value = value
 
@@ -17,9 +18,7 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, value):
-        # self.validation(value) 
         self.value = value
-
         if len(value) != 10:                  # Функция валидации номера(строго 10 цифр)
             raise ValueError(f"The number should contains 10 digits" )
         if not value.isdigit():
@@ -33,38 +32,23 @@ class Record:
         self.phones = []
         
     def add_phone(self, phone):
-        self.phones.append((Phone(phone)))
+        self.phones.append(Phone(phone))
 
     def remove_phone(self, phone):
-        self.phone = Phone(phone)
-        
         for i in self.phones:
-            if str(i)== str((self.phone)):
+            if i.value == phone:
                 self.phones.remove(i)
 
-
     def edit_phone(self, old_phone, new_phone):
-
-        self.old_phone = Phone(old_phone)
-        self.new_phone = Phone(new_phone)
-        b = []
-        
-        try:
-            [b.append(str(i))for i in self.phones]
-            b.insert(b.index(old_phone), ((new_phone))) # Вставка нового номера телефона в список на место старого
-            b.remove(old_phone) # Удаление старого номера телефона
-            self.phones.clear()
-            [self.phones.append(Phone(i))for i in b]
-        except:
-            ValueError(F" Please, check if the phone number is correct?")
-       
+        for i in self.phones:
+            if i.value == old_phone:
+                self.phones.insert(self.phones.index(i), Phone(new_phone))
+                self.phones.remove(i)  
 
     def find_phone(self, phone):
-        self.phone = Phone(phone)
         for i in self.phones:
-            if str(i)== str((self.phone)):
+            if i.value == phone:
                 return (i)  
-
     
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
@@ -72,26 +56,17 @@ class Record:
 
 class AddressBook(UserDict):
     def add_record(self, record:Record):
-        self.record = record
-        self.data[record.name.value] = self.record
+        self.data[record.name.value] = record
 
     def find(self, name):
-        self.name = name
-        for key in self.data:
-            if key == self.name:
-                self.record = self.data.get(key)
-                return self.record 
+            return self.data.get(name)
             
     def delete(self,name):
-        self.name = name        
-        for key in self.data:
-            if key == self.name:
-                self.data.pop(key,None)
-                return self.data
+        self.data.pop(name,None)
+                
     
     def __str__(self):
-        for k,v in self.data.items():
-            return f"Contact name: {k}, phones: {'; '.join(p.value for p in v.phones) } "    
+            return f"Contacts info: {'; '.join(Record.__str__(p) for p in self.data.values())} "    
   
 
            
@@ -102,6 +77,8 @@ jane_record = Record("Jane")
 vasya = Record("Vasya")
 john_record.add_phone("1234567890")
 john_record.add_phone("5555555555")
+john_record.add_phone("1234567891")
+# john_record.remove_phone("1234567890")
 book.add_record(john_record)
 jane_record.add_phone("9876543210")
 book.add_record(jane_record)
@@ -115,4 +92,5 @@ found_phone = john.find_phone("5555555555")
 print(f"{john.name}: {found_phone}")
 book.delete("Jane")
 print(book)
+
 
