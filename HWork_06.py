@@ -39,11 +39,16 @@ class Record:
             if i.value == phone:
                 self.phones.remove(i)
 
-    def edit_phone(self, old_phone, new_phone):
-        for i in self.phones:
-            if i.value == old_phone:
-                self.phones.insert(self.phones.index(i), Phone(new_phone))
-                self.phones.remove(i)  
+    def edit_phone(self, old_phone:Phone, new_phone):
+        self.old_phone = Phone(old_phone) # Проверка телефона на соответствие классу Phone
+        self.new_phone = Phone(new_phone) 
+        try:
+            for i in self.phones:
+                if i.value == self.old_phone.value:
+                    self.phones.insert(self.phones.index(i), Phone(new_phone)) # Вставка нового номера телефона в список на место старого
+                    self.phones.remove(i) # Удаление старого номера телефона
+        except:
+            ValueError(F" Please, check if the phone number is correct?")
 
     def find_phone(self, phone):
         for i in self.phones:
@@ -66,7 +71,7 @@ class AddressBook(UserDict):
                 
     
     def __str__(self):
-            return f"Contacts info: {'; '.join(Record.__str__(p) for p in self.data.values())} "    
+            return f"Contacts info: {'; '.join(str(p) for p in self.data.values())} "    
   
 
            
