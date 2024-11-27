@@ -39,16 +39,11 @@ class Record:
             if i.value == phone:
                 self.phones.remove(i)
 
-    def edit_phone(self, old_phone:Phone, new_phone):
-        self.old_phone = Phone(old_phone) # Проверка телефона на соответствие классу Phone
-        self.new_phone = Phone(new_phone) 
-        try:
-            for i in self.phones:
-                if i.value == self.old_phone.value:
-                    self.phones.insert(self.phones.index(i), Phone(new_phone)) # Вставка нового номера телефона в список на место старого
-                    self.phones.remove(i) # Удаление старого номера телефона
-        except:
-            ValueError(F" Please, check if the phone number is correct?")
+    def edit_phone(self, old_phone, new_phone):
+        if self.find_phone(old_phone) == None:
+            raise ValueError(F" Please, check if the phone number is correct?")
+        self.phones.insert(self.phones.index(self.find_phone((old_phone))), Phone(new_phone)) 
+        self.phones.remove(self.find_phone(old_phone))
 
     def find_phone(self, phone):
         for i in self.phones:
